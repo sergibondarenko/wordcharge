@@ -128,6 +128,7 @@ test('Render the home page', () => {
   render(<App />);
   expect(screen.getByText(/wordcharge/i)).toBeInTheDocument();
   expect(screen.getByText(/create cards of words from a text. use the cards to learn languages/i)).toBeInTheDocument()
+  expect(screen.getByText(/copyright \(c\) 2021 by sergii bondarenko/i)).toBeInTheDocument()
 });
 
 test('Open a new work space and close it', async () => {
@@ -141,6 +142,7 @@ test('Open a new work space and close it', async () => {
   // Search the New work space for the default values.
   expect(screen.getByText(/wordcharge/i)).toBeInTheDocument();
   expect(screen.getByText(/create cards of words from a text. use the cards to learn languages/i)).toBeInTheDocument()
+  expect(screen.getByText(/copyright \(c\) 2021 by sergii bondarenko/i)).toBeInTheDocument()
   expect(getWorkSpacePageTitleInput()).toHaveValue('New');
   expect(getWorkSpacePageTextInput()).toBeInTheDocument();
   expect(screen.getByPlaceholderText('Paste your text here')).toBeInTheDocument();

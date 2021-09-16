@@ -10,9 +10,10 @@ import {
   Link,
   makeStyles
 } from '@material-ui/core';
-import { WorkSpaceService, WordCardsService } from '../../services';
+import { WorkSpaceService, WordCardsService, BrowserLocalStorageService } from '../../services';
 import { ConfirmDialog } from '../../components';
 import { WordCard  } from './WordCard';
+import { reject } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   title_field: {
@@ -90,20 +91,20 @@ export function WorkSpaceText({ value, onChange }) {
   );
 }
 
-export function buildWordsFromText(text = '', storageForDeletedWordcards) {
+export async function buildWordsFromText(text = '', allDeletedWords = {}) {
   const dict = new Set();
   const punctuationRegex = /[!"#$%&()*+,-./:;<=>?\\^_`{|}~»«0-9]/g;
 
-  text.trim().split(/\s+/).forEach((word) => {
-    const _word = word.replace(punctuationRegex, ' ').trim().toLowerCase();
-    if (storageForDeletedWordcards) {
-      if (_word && !storageForDeletedWordcards.wasWordDeleted(_word)) dict.add(_word);
-    } else {
-      if (_word) dict.add(_word);
-    }
-  });
+  return new Promise(async (resolve) => {
+    const words = text.trim().split(/\s+/);
 
-  return [...dict];
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i].replace(punctuationRegex, ' ').trim().toLowerCase();
+      if (word && !allDeletedWords[word]) dict.add(word);
+    }
+
+    resolve([...dict]);
+  });
 }
 
 const DEFAULT_DICTIONARY_VALUE = 'fd-eng-deu';
@@ -258,7 +259,7 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
   const { spaceId } = useParams();
   const history = useHistory();
   const storageForWorkSpaces = new WorkSpaceService();
-  const storageForDeletedWordcards = new WordCardsService();
+  const wordCardsService = new WordCardsService({ storage: new BrowserLocalStorageService() });
 
   const [ state, dispatch ] = useReducer(stateReducer, getInitialState());
 
@@ -326,13 +327,14 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
     handleClose();
   }
 
-  function handleBuildWordsFromText() {
+  async function handleBuildWordsFromText() {
     let dict = [];
     const { text } = state;
 
     try {
       dispatch({ type: ACTION_BUILD_DICTIONARY_FROM_TEXT_START });
-      dict = buildWordsFromText(text, storageForDeletedWordcards);
+      const allDeletedWords = await wordCardsService.fetchAllDeletedWords(); 
+      dict = await buildWordsFromText(text, allDeletedWords);
 
       if (!dict.length) {
         triggerWarningAlert(
@@ -349,13 +351,13 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
     dispatch({ type: ACTION_BUILD_DICTIONARY_FROM_TEXT_END, payload: dict });
   }
 
-  function restoreAllTheWordsFromText(text) {
+  async function restoreAllTheWordsFromText(text) {
     let dict = [];
 
     try {
       dispatch({ type: ACTION_BUILD_DICTIONARY_FROM_TEXT_START });
-      dict = buildWordsFromText(text);
-      storageForDeletedWordcards.restoreWords(dict);
+      dict = await buildWordsFromText(text);
+      await wordCardsService.restoreWords(dict);
       onCloseAlert();
     } catch (err) {
       console.error('WorkSpacePage, restoreAllTheWordsFromText', err);
@@ -415,11 +417,11 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
     dispatch({ type: ACTION_CANCEL_WORD_DELETION });
   }
 
-  function handleConfirmDeletionDialog() {
+  async function handleConfirmDeletionDialog() {
     const { allWordsFromText, currentWordIdx } = state;
 
     try {
-      storageForDeletedWordcards.deleteWord(allWordsFromText[currentWordIdx]);
+      await wordCardsService.deleteWord(allWordsFromText[currentWordIdx]);
       dispatch({ type: ACTION_DELETE_WORD });
     } catch (err) {
       console.error('WorkSpacePage, handleDeleteWord', err);

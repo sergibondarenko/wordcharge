@@ -303,11 +303,6 @@ const languagePairsList = [
 ];
 
 class FreeDict {
-  // TODO: Setup own dictd server instead of using the public one. 
-  constructor({ server = 'dict.au.dyslexicfish.net' } = {}) {
-    this.server = server;
-  }
-
   translate({ dictName, word }) {
     if (!dictSupported.has(dictName)) {
       throw new Error(`The dict "${dictName}" doesn't exist.`);

@@ -11,9 +11,10 @@
 - [x] Deploy the app to the Google cloud.
 - [x] Attach the wordcharge.com domain to it.
 - [x] Setup local dictd server.
-- [ ] Google analytics. 
 
 # TODO Production
+- [ ] Display deleted/known word cards alongside the word cards. Allow user to put the deleted words back.
+- [ ] Google analytics. 
 - [ ] Show warning if approaching the local storage limit. Show error if the limit was reached. Put a link to clear the local storage.
 - [ ] User signin/login. Simple user page.
 - [ ] TLS. Buy the certificate.

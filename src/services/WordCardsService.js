@@ -1,8 +1,8 @@
-import { BrowserLocalStorage } from './BrowserLocalStorage';
+import { BrowserLocalStorageService } from './BrowserLocalStorageService';
 
 const DEFAULT = {};
 
-export class StorageForDeletedWordCards extends BrowserLocalStorage {
+export class WordCardsService extends BrowserLocalStorageService {
   constructor({ localStorageName = 'wordcharge-deleted-word-cards' } = {}) {
     super({ localStorageName });
   }

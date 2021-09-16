@@ -10,7 +10,7 @@ import {
   Link,
   makeStyles
 } from '@material-ui/core';
-import { StorageForWorkSpaces, StorageForDeletedWordCards } from '../../services';
+import { WorkSpaceService, WordCardsService } from '../../services';
 import { ConfirmDialog } from '../../components';
 import { WordCard  } from './WordCard';
 
@@ -257,8 +257,8 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
   const isMountedRef = useRef(null);
   const { spaceId } = useParams();
   const history = useHistory();
-  const storageForWorkSpaces = new StorageForWorkSpaces();
-  const storageForDeletedWordcards = new StorageForDeletedWordCards();
+  const storageForWorkSpaces = new WorkSpaceService();
+  const storageForDeletedWordcards = new WordCardsService();
 
   const [ state, dispatch ] = useReducer(stateReducer, getInitialState());
 

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { BrowserLocalStorage } from './BrowserLocalStorage';
+import { BrowserLocalStorageService } from './BrowserLocalStorageService';
 
-export class StorageForWorkSpaces extends BrowserLocalStorage {
+export class WorkSpaceService extends BrowserLocalStorageService {
   constructor({ localStorageName = 'wordcharge-work-spaces' } = {}) {
     super({ localStorageName });
   }

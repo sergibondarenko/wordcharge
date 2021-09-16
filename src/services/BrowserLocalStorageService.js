@@ -1,4 +1,4 @@
-export class BrowserLocalStorage {
+export class BrowserLocalStorageService {
   constructor({ localStorageName = 'wordcharge' } = {}) {
     this._localStorageName = localStorageName;
   }

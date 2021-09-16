@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Grid, TextField, makeStyles } from '@material-ui/core';
 import { throttle } from 'lodash';
-import { StorageForWorkSpaces } from '../../services';
+import { WorkSpaceService } from '../../services';
 import { WorkSpaceCard } from './WorkSpaceCard';
 
 const useStyles = makeStyles({
@@ -47,7 +47,7 @@ export function WorkSpaceGrid({ triggerErrorToast }) {
   const [workSpaces, setWorkSpaces] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchValue, setSearchValue] = useState('');
-  const storage = new StorageForWorkSpaces();
+  const storage = new WorkSpaceService();
 
   useEffect(() => {
     fetchData();

@@ -1,2 +1,2 @@
-export { StorageForWorkSpaces } from './StorageForWorkSpaces';
-export { StorageForDeletedWordCards } from './StorageForDeletedWordCards';
+export { WorkSpaceService } from './WorkSpaceService';
+export { WordCardsService } from './WordCardsService';

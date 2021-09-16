@@ -1,10 +1,10 @@
 const express = require('express');
 const path = require('path');
-const { Dict } = require('./dict');
+const { FreeDict } = require('./FreeDict');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
-const dict = new Dict();
+const freeDict = new FreeDict();
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, '../build')));
@@ -13,10 +13,10 @@ app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from server!' });
 });
 
-app.get('/api/translate/:dictName/:word', (req, res) => {
+app.get('/api/freedict/translate/:dictName/:word', (req, res) => {
   try {
     const { dictName, word } = req.params;
-    const data = dict.translate({ dictName, word });
+    const data = freeDict.translate({ dictName, word });
 
     if (data === null) res.status(404).send('Not found');
     else res.json({ data }); 
@@ -25,9 +25,9 @@ app.get('/api/translate/:dictName/:word', (req, res) => {
   }
 });
 
-app.get('/api/translate', (req, res) => {
+app.get('/api/freedict/translate', (req, res) => {
   try {
-    const data = dict.listDictionaries();
+    const data = freeDict.listDictionaries();
     res.json({ data });
   } catch (error) {
     res.status(500).send(error.message);

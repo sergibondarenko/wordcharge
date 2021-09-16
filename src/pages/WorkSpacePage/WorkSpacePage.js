@@ -10,7 +10,12 @@ import {
   Link,
   makeStyles
 } from '@material-ui/core';
-import { WorkSpaceService, WordCardsService, BrowserLocalStorageService } from '../../services';
+import {
+  WorkSpaceService,
+  WordCardsService,
+  BrowserLocalStorageService,
+  TranslationService
+} from '../../services';
 import { ConfirmDialog } from '../../components';
 import { WordCard  } from './WordCard';
 
@@ -296,12 +301,12 @@ function stateReducer(state, action) {
 }
 
 export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseAlert }) {
-  const classes = useStyles();
   const isMountedRef = useRef(null);
   const { spaceId } = useParams();
   const history = useHistory();
   const workSpaceService = new WorkSpaceService({ storage: new BrowserLocalStorageService() });
   const wordCardsService = new WordCardsService({ storage: new BrowserLocalStorageService() });
+  const translationService = new TranslationService();
 
   const [ state, dispatch ] = useReducer(stateReducer, getInitialState());
 
@@ -333,15 +338,9 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
     dispatch({ type: ACTION_LOAD_DICTIONARIES_START });
 
     try {
-      let res = await fetch(`/api/translate`);
-
-      if (res.ok) {
-        res = await res.json();
-        if (isMountedRef.current) {
-          dispatch({ type: ACTION_LOAD_DICTIONARIES_END, payload: res.data });
-        }
-      } else {
-        throw res;
+      const { data } = await translationService.fetchAllDictionaries();
+      if (isMountedRef.current) {
+        dispatch({ type: ACTION_LOAD_DICTIONARIES_END, payload: data });
       }
     } catch (err) {
       console.error('WorkSpacePage, fetchDictionaries', err);
@@ -426,19 +425,15 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
       }
   
       const wordToTranslate = text && typeof text === 'string' ? text : allWordsFromText[currentWordIdx];
-      let res = await fetch(`/api/translate/${currentDictionary.value}/${wordToTranslate}`);
+      const { data } = await translationService.translate({
+        langPair: currentDictionary.value,
+        word: wordToTranslate
+      }); 
 
-      if (res.ok) {
-        res = await res.json(); 
-        if (isNoDefinitionButIsMatch(res.data)) {
-          dispatch({ type: ACTION_TRANSLATE_WORD_END_MATCH, payload: res.data });
-        } else {
-          dispatch({ type: ACTION_TRANSLATE_WORD_END, payload: res.data });
-        }
-      } else if (res.status === 404) {
-        dispatch({ type: ACTION_TRANSLATE_WORD_END, payload: 'Not found' });
+      if (isNoDefinitionButIsMatch(data)) {
+        dispatch({ type: ACTION_TRANSLATE_WORD_END_MATCH, payload: data });
       } else {
-        throw res;
+        dispatch({ type: ACTION_TRANSLATE_WORD_END, payload: data });
       }
     } catch (err) {
       console.error('WorkSpacePage, handleTranslate', err);

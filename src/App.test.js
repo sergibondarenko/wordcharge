@@ -101,7 +101,7 @@ function getWorkSpacePage() {
 }
 
 const server = setupServer(
-  rest.get('/api/translate', (req, res, ctx) => {
+  rest.get('/api/freedict/translate', (req, res, ctx) => {
     const data = [
       { title: 'English-German', value: 'fd-eng-deu' },
       { title: 'German-English', value: 'fd-deu-eng' },
@@ -313,7 +313,7 @@ test('Stress test the work spaces', async () => {
 test('Show error toast when unable to fetch a word translation in a work space', async () => {
   const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
   server.use(
-    rest.get('/api/translate', (req, res, ctx) => {
+    rest.get('/api/freedict/translate', (req, res, ctx) => {
       const data = [
         { title: 'English-German', value: 'eng-deu' },
         { title: 'German-English', value: 'deu-eng' },
@@ -321,7 +321,7 @@ test('Show error toast when unable to fetch a word translation in a work space',
 
       return res(ctx.json({ data }));
     }),
-    rest.get('/api/translate/:dictValue/:word', (req, res, ctx) => {
+    rest.get('/api/freedict/translate/:dictValue/:word', (req, res, ctx) => {
       return res(ctx.status(500))
     }),
   )
@@ -358,7 +358,7 @@ test('Show error toast when unable to fetch a word translation in a work space',
 test('Show error toast when unable to fetch dictionaries in a work space', async () => {
   const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
   server.use(
-    rest.get('/api/translate', (req, res, ctx) => {
+    rest.get('/api/freedict/translate', (req, res, ctx) => {
       return res(ctx.status(500))
     }),
   )
@@ -562,7 +562,7 @@ test('Validation of title and text in a work space', async () => {
 
 describe('Use word cards', () => {
   const server = setupServer(
-    rest.get('/api/translate/:dictValue/:word', (req, res, ctx) => {
+    rest.get('/api/freedict/translate/:dictValue/:word', (req, res, ctx) => {
       const { word } = req.params;
       const dict = {
         to: "2 definitions found\n\nFrom English-German FreeDict Dictionary ver. 0.3.7 [fd-eng-deu]:\n\n  to /tou/\n  an, auf, nach, zu\n\nFrom English-German FreeDict Dictionary ver. 0.3.7 [fd-eng-deu]:\n\n  to) /tou/\n  ungünstig (für), von), überreden, überzeugen (zu",
@@ -575,7 +575,7 @@ describe('Use word cards', () => {
 
       return res(ctx.json({ data }));
     }),
-    rest.get('/api/translate', (req, res, ctx) => {
+    rest.get('/api/freedict/translate', (req, res, ctx) => {
       const data = [
         { title: 'English-German', value: 'fd-eng-deu' },
         { title: 'German-English', value: 'fd-deu-eng' },

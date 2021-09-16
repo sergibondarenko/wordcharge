@@ -302,7 +302,7 @@ const languagePairsList = [
   { value: 'fd-pol-ell', title: 'język polski-ελληνικά' }
 ];
 
-class Dict {
+class FreeDict {
   // TODO: Setup own dictd server instead of using the public one. 
   constructor({ server = 'dict.au.dyslexicfish.net' } = {}) {
     this.server = server;
@@ -330,5 +330,5 @@ class Dict {
 }
 
 module.exports = {
-  Dict,
+  FreeDict,
 }

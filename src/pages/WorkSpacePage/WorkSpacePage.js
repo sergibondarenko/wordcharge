@@ -117,6 +117,49 @@ export function isNoDefinitionButIsMatch(text) {
   return text.match(/perhaps you mean/i) !== null;
 }
 
+export function CloseButton({ onClick }) {
+  const classes = useStyles();
+  return (
+    <Button
+      className={classes.text_control_button}
+      variant="contained"
+      onClick={onClick}
+    >
+      Close
+    </Button>
+  );
+}
+
+export function SaveButton({ onClick }) {
+  const classes = useStyles();
+  return (
+    <Button
+      className={classes.text_control_button}
+      variant="contained"
+      color="primary"
+      onClick={onClick}
+    >
+      Save
+    </Button>
+  );
+}
+
+export function DictionaryButton({ isLoading, onClick }) {
+  const classes = useStyles();
+  return (
+    <Button
+     className={classes.text_control_button}
+     disabled={isLoading}
+     color={isLoading ? 'secondary' : 'primary'}
+     startIcon={isLoading ? <CircularProgress /> : null}
+     variant="contained"
+     onClick={onClick}
+    >
+      Dictionary
+    </Button>
+  );
+}
+
 function getInitialState() {
   return {
     id: uuidv4(),
@@ -458,37 +501,15 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
          </Grid>
          <Grid item container spacing={2} justifyContent="space-between" direction="row">
            <Grid item xs={12} sm={6}>
-             <Button
-              className={classes.text_control_button}
-              disabled={state.isParsingTextForWords}
-              color={state.isParsingTextForWords ? 'secondary' : 'primary'}
-              startIcon={state.isParsingTextForWords ? <CircularProgress /> : null}
-              variant="contained"
-              onClick={handleBuildWordsFromText}
-             >
-               Dictionary
-             </Button>
+             <DictionaryButton isLoading={state.isParsingTextForWords} onClick={handleBuildWordsFromText} />
            </Grid>
            <Grid item xs={12} sm={2}>
              <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <Button
-                  className={classes.text_control_button}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                >
-                  Save
-                </Button>
+                <SaveButton onClick={handleSubmit} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Button
-                  className={classes.text_control_button}
-                  variant="contained"
-                  onClick={handleClose}
-                >
-                  Close
-                </Button>
+                <CloseButton onClick={handleClose} />
               </Grid>
              </Grid>
            </Grid>

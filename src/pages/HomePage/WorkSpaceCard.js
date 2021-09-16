@@ -32,11 +32,51 @@ const useStyles = makeStyles(() => ({
 
 const ConfirmDeletionDialog = ConfirmDialog;
 
+export function DeleteButton({ onClick, spaceTitle }) {
+  return (
+    <IconButton
+      data-testid={`work-space-btn-delete-${spaceTitle}`}
+      aria-label="delete"
+      onClick={onClick}
+    >
+      <DeleteIcon />
+    </IconButton>
+  );
+}
+
+export function EnterButton({ onClick, spaceTitle }) {
+  return (
+    <Button
+      size="small"
+      data-testid={`work-space-btn-enter-${spaceTitle}`}
+      onClick={onClick}
+    >
+      Enter
+    </Button>
+  );
+}
+
+export function TitleField({ value }) {
+  const classes = useStyles();
+  return (
+    <Typography variant="h5" component="h2" className={classes.card_content_title}>  
+      {value.slice(0, 40)} 
+    </Typography>
+  )
+}
+
+export function SpaceTextField({ value }) {
+  const classes = useStyles();
+  return (
+    <Typography className={classes.card_content_text} color="textSecondary">
+      {value.slice(0, 60)}
+    </Typography>
+  );
+}
+
 export function WorkSpaceCard({ title, text, id, onDelete }) {
   const history = useHistory();
   const classes = useStyles();
-  const titleText = title.slice(0, 40);
-  const cardText = text.slice(0, 60);
 
   const [ isConfirmDeletionDialog, setIsConfirmDeletionDialog ] = useState(false);
 
@@ -66,28 +106,12 @@ export function WorkSpaceCard({ title, text, id, onDelete }) {
       />
       <Card className={classes.card} variant="elevation" data-testid="work-space-card">
         <CardContent className={classes.card_content}>
-          <Typography variant="h5" component="h2" className={classes.card_content_title}>  
-            {titleText} 
-          </Typography>
-          <Typography className={classes.card_content_text} color="textSecondary">
-            {cardText}
-          </Typography>
+          <TitleField value={title} />
+          <SpaceTextField value={text} />
         </CardContent>
         <CardActions className={classes.card_actions}>
-          <Button
-            size="small"
-            data-testid={`work-space-btn-enter-${title}`}
-            onClick={handleEnter}
-          >
-            Enter
-          </Button>
-          <IconButton
-            data-testid={`work-space-btn-delete-${title}`}
-            aria-label="delete"
-            onClick={handleDelete}
-          >
-            <DeleteIcon />
-          </IconButton>
+          <EnterButton onClick={handleEnter} spaceTitle={title} />
+          <DeleteButton onClick={handleDelete} spaceTitle={title} />
         </CardActions>
       </Card>
     </>

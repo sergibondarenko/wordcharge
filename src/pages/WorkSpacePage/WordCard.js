@@ -98,6 +98,85 @@ export function WordTranslation({ isTranslating, text }) {
   }
 }
 
+export function WordField({ value }) {
+  const classes = useStyles();
+  return (
+    <Typography className={classes.card_content_word} data-testid="word-card-word">
+      {value}
+    </Typography>
+  );
+}
+
+export function DictionariesField({ value, options, onChange }) {
+  return (
+    <Autocomplete
+      id="word-card-list-of-dict"
+      disableClearable={true}
+      value={value}
+      options={options}
+      getOptionLabel={(option) => option.title}
+      getOptionSelected={(option, value) => option.value === value.value}
+      renderInput={(params) => <TextField {...params} label="Dictionary" variant="outlined" />}
+      onChange={onChange}
+    />
+  );
+}
+
+export function TranslateButton({ onClick }) {
+  return (
+    <Button
+      size="small"
+      variant="outlined"
+      startIcon={<TranslateIcon />}
+      onClick={onClick}
+    >
+      Translate
+    </Button>
+  );
+}
+
+export function DeleteButton({ onClick }) {
+  return (
+    <IconButton
+      aria-label="delete"
+      data-testid="word-card-btn-delete"
+      onClick={onClick}
+    >
+      <DeleteIcon />
+    </IconButton>
+  );
+}
+
+export function WordCountField({ value }) {
+  return (
+    <Typography>{value}</Typography>
+  );
+}
+
+export function PrevButton({ onClick }) {
+  return (
+    <IconButton
+      aria-label="previous"
+      data-testid="word-card-btn-prev"
+      onClick={onClick}
+    >
+      <NavigateBeforeIcon />
+    </IconButton>
+  );
+}
+
+export function NextButton({ onClick }) {
+  return (
+    <IconButton
+      aria-label="next"
+      data-testid="word-card-btn-next"
+      onClick={onClick}
+    >
+      <NavigateNextIcon />
+    </IconButton>
+  );
+}
+
 export function WordCard({
   dictionaries,
   isLoadingDictionaries,
@@ -136,22 +215,11 @@ export function WordCard({
         <Grid container direction="column" spacing={2} wrap="nowrap">
           <Grid item xs={12}>
             {isLoadingDictionaries ? <CircularProgress /> : (
-              <Autocomplete
-                id="word-card-list-of-dict"
-                disableClearable={true}
-                value={currentDictionary}
-                options={dictionaries}
-                getOptionLabel={(option) => option.title}
-                getOptionSelected={(option, value) => option.value === value.value}
-                renderInput={(params) => <TextField {...params} label="Dictionary" variant="outlined" />}
-                onChange={onSelectDictionary}
-              />
+              <DictionariesField value={currentDictionary} options={dictionaries} onChange={onSelectDictionary} />
             )}
           </Grid>
           <Grid item xs={12}>
-            <Typography className={classes.card_content_word} data-testid="word-card-word">
-              {word}
-            </Typography>
+            <WordField value={word} />
           </Grid>
           {currentWordMatch !== null && (
             <Grid item xs={12}>
@@ -173,50 +241,23 @@ export function WordCard({
           <Grid item>
             <Grid item container alignItems="center">
               <Grid item>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<TranslateIcon />}
-                  onClick={handleTranslate}
-                >
-                  Translate
-                </Button>
+                <TranslateButton onClick={handleTranslate} />
               </Grid>
               <Grid item>
-                <IconButton
-                  aria-label="delete"
-                  data-testid="word-card-btn-delete"
-                  onClick={onDelete}
-                >
-                  <DeleteIcon />
-                </IconButton>
+                <DeleteButton onClick={onDelete} />
               </Grid>
             </Grid>
           </Grid>
           <Grid item>
             <Grid item container alignItems="center">
               <Grid item>
-                <Typography>
-                  {wordN}/{wordCount}
-                </Typography>
+                <WordCountField value={`${wordN}/${wordCount}`} />
               </Grid>
               <Grid item>
-                <IconButton
-                  aria-label="previous"
-                  data-testid="word-card-btn-prev"
-                  onClick={handlePrev}
-                >
-                  <NavigateBeforeIcon />
-                </IconButton>
+                <PrevButton onClick={handlePrev} />
               </Grid>
               <Grid item>
-                <IconButton
-                  aria-label="next"
-                  data-testid="word-card-btn-next"
-                  onClick={handleNext}
-                >
-                  <NavigateNextIcon />
-                </IconButton>
+                <NextButton onClick={handleNext} />
               </Grid>
             </Grid>
           </Grid>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Grid, TextField, makeStyles } from '@material-ui/core';
 import { throttle } from 'lodash';
-import { WorkSpaceService } from '../../services';
+import { WorkSpaceService, BrowserLocalStorageService } from '../../services';
 import { WorkSpaceCard } from './WorkSpaceCard';
 
 const useStyles = makeStyles({
@@ -47,18 +47,18 @@ export function WorkSpaceGrid({ triggerErrorToast }) {
   const [workSpaces, setWorkSpaces] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchValue, setSearchValue] = useState('');
-  const storage = new WorkSpaceService();
+  const workSpaceService = new WorkSpaceService({ storage: new BrowserLocalStorageService() });
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function fetchData() {
+  async function fetchData() {
     try {
-      let data = storage.fetchAll();
+      let data = await workSpaceService.fetchAll();
       data.sort((a, b) => b.timestamp - a.timestamp);
-      data = [storage.getNewWorkSpace(), ...data];
+      data = [workSpaceService.getNewWorkSpace(), ...data];
       setWorkSpaces(data);
     } catch (err) {
       console.error('WorkSpaceGrid, fetchData', err);
@@ -66,9 +66,14 @@ export function WorkSpaceGrid({ triggerErrorToast }) {
     }
   }
 
-  function handleDeleteSpaceCard(id) {
-    storage.remove(id);
-    fetchData();
+  async function handleDeleteSpaceCard(id) {
+    try {
+      await workSpaceService.delete(id);
+      fetchData();
+    } catch (err) {
+      console.error('WorkSpaceGrid, handleDeleteSpaceCard', err);
+      triggerErrorToast(`Failed to delete the work spaces data. ${err.message}`);
+    }
   }
 
   function handleWorkSpaceSearchValue(value) {

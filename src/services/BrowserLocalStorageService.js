@@ -1,49 +1,43 @@
 const DEFAULT_STORAGE_DATA = {};
-const WORDCHARGE_INDEX = 'wordcharge';
 
 export class BrowserLocalStorageService {
-  constructor({ localStorageName = 'wordcharge' } = {}) {
-    this._localStorageName = localStorageName;
-  }
-
   _addAll(obj, index) {
     if (!obj || typeof obj !== 'object') {
       throw new Error('The parameter must be of type object.');
     }
 
-    localStorage.setItem(index || this._localStorageName, JSON.stringify(obj));
+    localStorage.setItem(index, JSON.stringify(obj));
     return null;
   }
 
   _fetchAll(index) {
-    return JSON.parse(localStorage.getItem(index || this._localStorageName)) || DEFAULT_STORAGE_DATA;
+    return JSON.parse(localStorage.getItem(index)) || DEFAULT_STORAGE_DATA;
   }
 
-  put({ index, data }) {
+  put({ index, id, data }) {
     return new Promise((resolve) => {
       const storageData = this._fetchAll(index);
-      this._addAll({ ...storageData, [data]: true }, index);
+      this._addAll({ ...storageData, [id]: data }, index);
       resolve(true);
     });
   }
 
-  get({ index, data }) {
+  get({ index, id }) {
     return new Promise((resolve) => {
       const storageData = this._fetchAll(index);
-      if (storageData[data]) resolve(storageData[data]);
+      if (storageData[id]) resolve(storageData[id]);
       else resolve(-1);
     });
   }
 
-  delete({ index, data }) {
+  delete({ index, id }) {
     return new Promise((resolve) => {
       const storageData = this._fetchAll(index);
 
-      if (storageData[data]) {
-        const deletedData = storageData[data];
-        delete storageData[data];
+      if (storageData[id]) {
+        delete storageData[id];
         this._addAll(storageData, index);
-        resolve(deletedData);
+        resolve(id);
       } else {
         resolve(-1);
       }
@@ -51,6 +45,16 @@ export class BrowserLocalStorageService {
   }
 
   fetchAll({ index }) {
-    return Promise.resolve(this._fetchAll(index));
+    return new Promise((resolve) => {
+      const res = [];
+      const data = this._fetchAll(index);
+
+      for (const [id, val] of Object.entries(data)) {
+        if (typeof val === 'object' && val !== null) res.push({ id, ...val });
+        else res.push({ id, val });
+      }
+
+      resolve(res);
+    });
   }
 }

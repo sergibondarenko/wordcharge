@@ -124,15 +124,24 @@ afterEach(() => {
 
 afterAll(() => server.close());
 
-test('Render the home page', () => {
-  render(<App />);
+test('Render the home page', async () => {
+  act(() => {
+    render(<App />);
+  });
+
+  await waitFor(() => getHomePage());
+
   expect(screen.getByText(/wordcharge/i)).toBeInTheDocument();
   expect(screen.getByText(/create cards of words from a text. use the cards to learn languages/i)).toBeInTheDocument()
   expect(screen.getByText(/copyright \(c\) 2021 by sergii bondarenko/i)).toBeInTheDocument()
 });
 
 test('Open a new work space and close it', async () => {
-  render(<App />);
+  act(() => {
+    render(<App />);
+  });
+
+  await waitFor(() => getHomePage());
 
   // Enter the New work space
   let btnEnter = getBtnEnter();
@@ -160,7 +169,11 @@ test('Open a new work space and close it', async () => {
 });
 
 test('Create a new work space and delete it', async () => {
-  render(<App />);
+  act(() => {
+    render(<App />);
+  });
+
+  await waitFor(() => getHomePage());
 
   const btnEnterWorkSpace = getWorkSpaceCardEnterBtn('New');
   fireEvent.click(btnEnterWorkSpace);
@@ -193,6 +206,7 @@ test('Create a new work space and delete it', async () => {
 
   // Enter the newly created work space.
   fireEvent.click(btnEnter);
+  await waitFor(() => getWorkSpacePageTitleInput());
 
   // Search the work space for the values.
   expect(screen.getByDisplayValue(inputTitleValue)).toBeInTheDocument();
@@ -241,7 +255,11 @@ test('Create a new work space and delete it', async () => {
 });
 
 test('Stress test the work spaces', async () => {
-  render(<App />);
+  act(() => {
+    render(<App />);
+  });
+
+  await waitFor(() => getHomePage());
 
   const workSpaces = [
     { title: 'title0', text: 'text0' },
@@ -308,7 +326,11 @@ test('Show error toast when unable to fetch a word translation in a work space',
     }),
   )
   
-  render(<App />);
+  act(() => {
+    render(<App />);
+  });
+
+  await waitFor(() => getHomePage());
 
   // Enter the new work space.
   fireEvent.click(getBtnEnter());
@@ -341,7 +363,11 @@ test('Show error toast when unable to fetch dictionaries in a work space', async
     }),
   )
   
-  render(<App />);
+  act(() => {
+    render(<App />);
+  });
+
+  await waitFor(() => getHomePage());
 
   fireEvent.click(getBtnEnter());
   await waitFor(() => screen.getByText(/failed to fetch the dictionaries/i));
@@ -351,7 +377,11 @@ test('Show error toast when unable to fetch dictionaries in a work space', async
 });
 
 test('Show alert if all words were deleted/remembered in a work space, then restore the words', async () => {
-  render(<App />);
+  act(() => {
+    render(<App />);
+  });
+
+  await waitFor(() => getHomePage());
 
   let btnEnter = getWorkSpaceCardEnterBtn('New');
   fireEvent.click(btnEnter);
@@ -420,6 +450,8 @@ test('Search for a work space', async () => {
     render(<App />);
   });
 
+  await waitFor(() => getHomePage());
+
   const workSpaces = [
     { title: 'Hamlet', text: 'To be or not to be' },
     { title: 'The Merchant of Venice', text: 'Your mind is tossing on the ocean' },
@@ -472,6 +504,8 @@ test('Validation of title and text in a work space', async () => {
   act(() => {
     render(<App />);
   });
+
+  await waitFor(() => getHomePage());
 
   // Enter the New space
   let btnEnter = getWorkSpaceCardEnterBtn('New');
@@ -568,6 +602,8 @@ describe('Use word cards', () => {
     act(() => {
       render(<App />);
     });
+
+    await waitFor(() => getHomePage());
  
     let btnEnter = getWorkSpaceCardEnterBtn('New');
     fireEvent.click(btnEnter);
@@ -618,6 +654,8 @@ describe('Use word cards', () => {
     act(() => {
       render(<App />);
     });
+
+    await waitFor(() => getHomePage());
  
     let btnEnter = getWorkSpaceCardEnterBtn('New');
     fireEvent.click(btnEnter);
@@ -658,6 +696,8 @@ describe('Use word cards', () => {
     act(() => {
       render(<App />);
     });
+
+    await waitFor(() => getHomePage());
  
     let btnEnter = getWorkSpaceCardEnterBtn('New');
     fireEvent.click(btnEnter);
@@ -724,6 +764,8 @@ describe('Use word cards', () => {
     act(() => {
       render(<App />);
     });
+
+    await waitFor(() => getHomePage());
  
     let btnEnter = getWorkSpaceCardEnterBtn('New');
     fireEvent.click(btnEnter);
@@ -783,6 +825,8 @@ describe('Use word cards', () => {
     act(() => {
       render(<App />);
     });
+
+    await waitFor(() => getHomePage());
  
     let btnEnter = getWorkSpaceCardEnterBtn('New');
     fireEvent.click(btnEnter);
@@ -848,6 +892,8 @@ describe('Use word cards', () => {
     act(() => {
       render(<App />);
     });
+
+    await waitFor(() => getHomePage());
  
     let btnEnter = getWorkSpaceCardEnterBtn('New');
     fireEvent.click(btnEnter);

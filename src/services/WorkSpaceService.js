@@ -1,6 +1,41 @@
 import { v4 as uuidv4 } from 'uuid';
-import { BrowserLocalStorageService } from './BrowserLocalStorageService';
 
+const WORDCHARGE_WORK_SPACES_INDEX = 'wordcharge-work-spaces';
+
+export class WorkSpaceService {
+  constructor({ storage }) {
+    this.storage = storage;
+  }
+
+  getNewWorkSpace() {
+    return {
+      id: uuidv4(),
+      title: 'New',
+      text: 'To be, or not to be, that is the question ...',
+      timestamp: new Date().getTime() // ms
+    };
+  }
+
+  fetchAll(index = WORDCHARGE_WORK_SPACES_INDEX) {
+    return this.storage.fetchAll({ index });
+  }
+
+  get(id, index = WORDCHARGE_WORK_SPACES_INDEX) {
+    return this.storage.get({ id, index });
+  }
+
+  put(space, index = WORDCHARGE_WORK_SPACES_INDEX) {
+    const { id, ...data } = space;
+    data.timestamp = new Date().getTime();
+    return this.storage.put({ id, data, index });
+  }
+
+  delete(id, index = WORDCHARGE_WORK_SPACES_INDEX) {
+    return this.storage.delete({ id, index }); 
+  }
+}
+
+/*
 export class WorkSpaceService extends BrowserLocalStorageService {
   constructor({ localStorageName = 'wordcharge-work-spaces' } = {}) {
     super({ localStorageName });
@@ -55,3 +90,4 @@ export class WorkSpaceService extends BrowserLocalStorageService {
     return this._addAll(data);
   }
 }
+*/

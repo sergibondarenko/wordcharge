@@ -13,7 +13,6 @@ import {
 import { WorkSpaceService, WordCardsService, BrowserLocalStorageService } from '../../services';
 import { ConfirmDialog } from '../../components';
 import { WordCard  } from './WordCard';
-import { reject } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   title_field: {
@@ -258,7 +257,7 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
   const isMountedRef = useRef(null);
   const { spaceId } = useParams();
   const history = useHistory();
-  const storageForWorkSpaces = new WorkSpaceService();
+  const workSpaceService = new WorkSpaceService({ storage: new BrowserLocalStorageService() });
   const wordCardsService = new WordCardsService({ storage: new BrowserLocalStorageService() });
 
   const [ state, dispatch ] = useReducer(stateReducer, getInitialState());
@@ -275,9 +274,9 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
     fetchDictionaries();
   }
 
-  function fetchWorkSpace() {
+  async function fetchWorkSpace() {
     try {
-      const space = storageForWorkSpaces.fetch(spaceId);
+      const space = await workSpaceService.get(spaceId);
       if (isMountedRef.current && space !== -1) {
         dispatch({ type: ACTION_FETCH_WORKSPACE, payload: space });
       }
@@ -320,10 +319,10 @@ export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseA
     history.push('/');
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const { id, title, text, currentDictionary } = state;
     if (!text || !title) return; 
-    storageForWorkSpaces.add({ id, title, text, currentDictionary });
+    await workSpaceService.put({ id, title, text, currentDictionary });
     handleClose();
   }
 

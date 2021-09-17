@@ -4,6 +4,15 @@ import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { App } from './App';
 
+// It gets around the 'auth0-spa-js must run on a secure origin' error
+Object.defineProperty(global.self, 'crypto', {
+  value: {
+    getRandomValues: arr => crypto.randomBytes(arr.length)
+  }
+});
+global.crypto.subtle = {};
+// END
+
 function getWorkSpaceCardEnterBtn(spaceTitle) {
   return screen.getByTestId(`work-space-btn-enter-${spaceTitle}`);
 }

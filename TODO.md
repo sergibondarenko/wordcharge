@@ -16,6 +16,7 @@
 - [ ] Show warning if approaching the local storage limit. Show error if the limit was reached. Put a link to clear the local storage.
 - [ ] User auth.
   - [x] Simple user auth with Auth0.
+  - [ ] User profile.
   - [ ] Protect the server API.
   - [ ] Store user IDs on the Wordhcharge server for the future use. For example, to keep user statistics, connect with the payment system, etc.\
   Probably we can use Elasticsearch to store everything.

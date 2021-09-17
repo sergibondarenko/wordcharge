@@ -25,6 +25,7 @@
     - [ ] Credit/debit card. 
     - [ ] PayPal.
     - [ ] Cryptocurrencies.
+- [ ] Web app translation.
 - [ ] Web browser extension. It is useful to create the work space on fly while you are surfing the Web.
 - [ ] Mobile app for iOS and Android. Probably, it can be developed in React Native.
 - [ ] An ETH token powered by app. You mine tokens while learning the words. 

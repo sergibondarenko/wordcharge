@@ -13,19 +13,25 @@
 - [x] Setup local dictd server.
 
 # TODO Production
-- [ ] Display deleted/known word cards alongside the word cards. Allow user to put the deleted words back.
-- [ ] Google analytics. 
 - [ ] Show warning if approaching the local storage limit. Show error if the limit was reached. Put a link to clear the local storage.
-- [ ] User signin/login. Simple user page.
-- [ ] TLS. Buy the certificate.
-- [ ] Payed subsciption:
-  - [ ] Google Translator API. It is the main reason to buy the subscription. Attention! The Google API is not free!
-  - [ ] Simple statistics on the learned words.
-  - [ ] Payment options:
-    - [ ] Credit/debit card. 
-    - [ ] PayPal.
-    - [ ] Cryptocurrencies.
+- [ ] User auth.
+  - [x] Simple user auth with Auth0.
+  - [ ] Protect the server API.
+  - [ ] Store user IDs on the Wordhcharge server for the future use. For example, to keep user statistics, connect with the payment system, etc.\
+  Probably we can use Elasticsearch to store everything.
+  - [ ] TLS. Use the certbot to get a free cert.
+  - [ ] Customize Auth0 auth page with Wordcharge logo.
+  - [ ] One or more of your connections are currently using Auth0 development keys and should not be used in production.
+- [ ] Display (for logged in users) deleted/known word cards alongside the word cards. Allow user to put the deleted words back.
+- [ ] Payed subsciption. Probably we can use a payment gateway, for example, Stripe.
+  - [ ] Debit and credit cards.
+  - [ ] Paypal.
+  - [ ] Accept cryptocurrencies.
+- [ ] Google Translator API (for the paying users). It is the main reason to buy the subscription. Attention! The Google API is not free!
+- [ ] Simple statistics (for the paying users) on the learned words.
+- [ ] Migrate to Material v5.
 - [ ] Web app translation.
+- [ ] Google analytics. 
 - [ ] Web browser extension. It is useful to create the work space on fly while you are surfing the Web.
 - [ ] Mobile app for iOS and Android. Probably, it can be developed in React Native.
 - [ ] An ETH token powered by app. You mine tokens while learning the words. 

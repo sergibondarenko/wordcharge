@@ -7,7 +7,8 @@ import {
   responsiveFontSizes,
   MuiThemeProvider,
   createTheme,
-  makeStyles
+  makeStyles,
+  Button
 } from '@material-ui/core';
 import {
   GitHub as GitHubIcon,
@@ -18,9 +19,11 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import { HomePage } from './pages/HomePage';
 import { WorkSpacePage } from './pages/WorkSpacePage';
 import { Alert } from './components';
+import { Auth0ProviderWithHistory } from './auth';
 
 import '@fontsource/roboto';
 import './App.css';
@@ -50,14 +53,51 @@ const useStyles = makeStyles({
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 
+export function LogInButton() {
+  const { loginWithRedirect } = useAuth0();
+  return <Button onClick={() => loginWithRedirect()}>Log In</Button>
+}
+
+export function SignUpButton() {
+  const { loginWithRedirect } = useAuth0();
+  return <Button onClick={() => loginWithRedirect({ screen_hint: 'signup' })}>Sign Up</Button>
+}
+
+export function LogOutButton() {
+  const { logout } = useAuth0();
+  return <Button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</Button>
+}
+
+export function AuthenticationButton() {
+  const { isAuthenticated } = useAuth0();
+  return isAuthenticated ? <LogOutButton /> : <LogInButton />;
+}
+
+export function AuthNav() {
+  return (
+    <>
+      <SignUpButton />
+      <AuthenticationButton />
+    </>
+  );
+}
+
 export function Header() {
   const classes = useStyles();  
+
   return (
     <div className={classes.app_header}>
-      <Typography variant="h1">Wordcharge</Typography>
-      <Typography variant="subtitle1" gutterBottom>
-        Create cards of words from a text. Use the cards to learn languages.
-      </Typography>
+      <Grid container spacing={2} justifyContent="space-between">
+        <Grid item>
+          <Typography variant="h1">Wordcharge</Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Create cards of words from a text. Use the cards to learn languages.
+          </Typography>
+        </Grid>
+        <Grid item>
+          <AuthNav />
+        </Grid>
+      </Grid>
     </div>
   );
 }
@@ -153,73 +193,75 @@ export function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <Router>
-        <div className={classes.app}>
-          <Header />
-          <div className={classes.app_content}>
-            <Grid container direction="column" spacing={4}>
-              {state.isAlert && (
+        <Auth0ProviderWithHistory>
+          <div className={classes.app}>
+            <Header />
+            <div className={classes.app_content}>
+              <Grid container direction="column" spacing={4}>
+                {state.isAlert && (
+                  <Grid item>
+                    <Alert
+                      data-testid="app-alert"
+                      severity={state.alertSeverity}
+                      onClose={handleCloseAlert}
+                    >
+                      {state.alertText}
+                    </Alert>
+                  </Grid>
+                )}
                 <Grid item>
-                  <Alert
-                    data-testid="app-alert"
-                    severity={state.alertSeverity}
-                    onClose={handleCloseAlert}
-                  >
-                    {state.alertText}
-                  </Alert>
+                  <Switch>
+                    <Route path='/workspace/:spaceId'>
+                      <WorkSpacePage
+                        triggerWarningToast={triggerWarningToast}
+                        triggerErrorToast={triggerErrorToast}
+                        triggerWarningAlert={triggerWarningAlert}
+                        triggerErrorAlert={triggerErrorAlert}
+                        onCloseToast={handleCloseToast}
+                        onCloseAlert={handleCloseAlert}
+                      />
+                    </Route>
+                    <Route path='/home'>
+                      <HomePage
+                        triggerWarningToast={triggerWarningToast}
+                        triggerErrorToast={triggerErrorToast}
+                        triggerWarningAlert={triggerWarningAlert}
+                        triggerErrorAlert={triggerErrorAlert}
+                        onCloseToast={handleCloseToast}
+                        onCloseAlert={handleCloseAlert}
+                      />
+                    </Route>
+                    <Route path='/'>
+                      <HomePage
+                        triggerWarningToast={triggerWarningToast}
+                        triggerErrorToast={triggerErrorToast}
+                        triggerWarningAlert={triggerWarningAlert}
+                        triggerErrorAlert={triggerErrorAlert}
+                        onCloseToast={handleCloseToast}
+                        onCloseAlert={handleCloseAlert}
+                      />
+                    </Route>
+                  </Switch>
                 </Grid>
-              )}
-              <Grid item>
-                <Switch>
-                  <Route path='/workspace/:spaceId'>
-                    <WorkSpacePage
-                      triggerWarningToast={triggerWarningToast}
-                      triggerErrorToast={triggerErrorToast}
-                      triggerWarningAlert={triggerWarningAlert}
-                      triggerErrorAlert={triggerErrorAlert}
-                      onCloseToast={handleCloseToast}
-                      onCloseAlert={handleCloseAlert}
-                    />
-                  </Route>
-                  <Route path='/home'>
-                    <HomePage
-                      triggerWarningToast={triggerWarningToast}
-                      triggerErrorToast={triggerErrorToast}
-                      triggerWarningAlert={triggerWarningAlert}
-                      triggerErrorAlert={triggerErrorAlert}
-                      onCloseToast={handleCloseToast}
-                      onCloseAlert={handleCloseAlert}
-                    />
-                  </Route>
-                  <Route path='/'>
-                    <HomePage
-                      triggerWarningToast={triggerWarningToast}
-                      triggerErrorToast={triggerErrorToast}
-                      triggerWarningAlert={triggerWarningAlert}
-                      triggerErrorAlert={triggerErrorAlert}
-                      onCloseToast={handleCloseToast}
-                      onCloseAlert={handleCloseAlert}
-                    />
-                  </Route>
-                </Switch>
               </Grid>
-            </Grid>
-          </div>
-          <Footer />
-          <Snackbar
-            open={state.isToast}
-            autoHideDuration={6000}
-            onClose={handleCloseToast}
-          >
-            <Alert
-              data-testid="app-alert-toast"
+            </div>
+            <Footer />
+            <Snackbar
+              open={state.isToast}
+              autoHideDuration={6000}
               onClose={handleCloseToast}
-              severity={state.toastSeverity}
-              style={{ minWidth: '400px' }}
             >
-              {state.toastText}
-            </Alert>
-          </Snackbar>
-        </div>
+              <Alert
+                data-testid="app-alert-toast"
+                onClose={handleCloseToast}
+                severity={state.toastSeverity}
+                style={{ minWidth: '400px' }}
+              >
+                {state.toastText}
+              </Alert>
+            </Snackbar>
+          </div>
+        </Auth0ProviderWithHistory>
       </Router>
     </MuiThemeProvider>
   );

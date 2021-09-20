@@ -1,28 +1,20 @@
 import React, { useReducer } from 'react';
 import {
   Grid,
-  Typography,
-  Snackbar,
-  IconButton,
   responsiveFontSizes,
   MuiThemeProvider,
   createTheme,
   makeStyles,
-  Button
 } from '@material-ui/core';
-import {
-  GitHub as GitHubIcon,
-  Email as EmailIcon
-} from '@material-ui/icons';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-} from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+} from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { WorkSpacePage } from './pages/WorkSpacePage';
-import { Alert } from './components';
+import { UserProfilePage } from './pages/UserProfilePage';
+import { Alert, AlertToaster, Footer, Header, Breadcrumbs } from './components';
 import { Auth0ProviderWithHistory } from './auth';
 
 import '@fontsource/roboto';
@@ -37,95 +29,16 @@ const useStyles = makeStyles({
     margin: 'auto',
     padding: '10px 20px'
   },
-  app_header: {
-    marginBottom: '32px'
-  },
-  app_footer: {
-    position: 'relative',
-    bottom: 0,
-    marginTop: '32px'
-  },
   app_content: {
     flex: 1
   },
+  app_breadcrumbs: {
+    marginBottom: '16px'
+  }
 });
 
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
-
-export function LogInButton() {
-  const { loginWithRedirect } = useAuth0();
-  return <Button onClick={() => loginWithRedirect()}>Log In</Button>
-}
-
-export function SignUpButton() {
-  const { loginWithRedirect } = useAuth0();
-  return <Button onClick={() => loginWithRedirect({ screen_hint: 'signup' })}>Sign Up</Button>
-}
-
-export function LogOutButton() {
-  const { logout } = useAuth0();
-  return <Button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</Button>
-}
-
-export function AuthenticationButton() {
-  const { isAuthenticated } = useAuth0();
-  return isAuthenticated ? <LogOutButton /> : <LogInButton />;
-}
-
-export function AuthNav() {
-  return (
-    <>
-      <SignUpButton />
-      <AuthenticationButton />
-    </>
-  );
-}
-
-export function Header() {
-  const classes = useStyles();  
-
-  return (
-    <div className={classes.app_header}>
-      <Grid container spacing={2} justifyContent="space-between">
-        <Grid item>
-          <Typography variant="h1">Wordcharge</Typography>
-          <Typography variant="subtitle1" gutterBottom>
-            Create cards of words from a text. Use the cards to learn languages.
-          </Typography>
-        </Grid>
-        <Grid item>
-          <AuthNav />
-        </Grid>
-      </Grid>
-    </div>
-  );
-}
-
-export function Footer() {
-  const classes = useStyles();
-  return (
-    <div className={classes.app_footer}>
-      <Grid container alignItems="center">
-        <Grid item>
-          <IconButton color="default" aria-label="Email" href="mailto:sergibondarenko@gmail.com">
-            <EmailIcon />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton color="default" aria-label="GitHub" href="https://github.com/sergibondarenko/wordcharge">
-            <GitHubIcon />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <Typography variant="body1">
-            Copyright (C) 2021 by Sergii Bondarenko
-          </Typography>
-        </Grid>
-      </Grid>
-    </div>
-  );
-}
 
 const initialState = {
   isToast: false,
@@ -196,6 +109,9 @@ export function App() {
         <Auth0ProviderWithHistory>
           <div className={classes.app}>
             <Header />
+            <div className={classes.app_breadcrumbs}>
+              <Breadcrumbs />
+            </div>
             <div className={classes.app_content}>
               <Grid container direction="column" spacing={4}>
                 {state.isAlert && (
@@ -231,6 +147,16 @@ export function App() {
                         onCloseAlert={handleCloseAlert}
                       />
                     </Route>
+                    <Route path='/user-profile/:userNickname'>
+                      <UserProfilePage
+                        triggerWarningToast={triggerWarningToast}
+                        triggerErrorToast={triggerErrorToast}
+                        triggerWarningAlert={triggerWarningAlert}
+                        triggerErrorAlert={triggerErrorAlert}
+                        onCloseToast={handleCloseToast}
+                        onCloseAlert={handleCloseAlert}
+                      />
+                    </Route>
                     <Route path='/'>
                       <HomePage
                         triggerWarningToast={triggerWarningToast}
@@ -246,20 +172,13 @@ export function App() {
               </Grid>
             </div>
             <Footer />
-            <Snackbar
-              open={state.isToast}
-              autoHideDuration={6000}
-              onClose={handleCloseToast}
-            >
-              <Alert
-                data-testid="app-alert-toast"
-                onClose={handleCloseToast}
-                severity={state.toastSeverity}
-                style={{ minWidth: '400px' }}
-              >
-                {state.toastText}
-              </Alert>
-            </Snackbar>
+            <AlertToaster
+              isOpen={state.isToast}
+              alertSeverity={state.toastSeverity}
+              alertText={state.toastText}
+              onCloseSnackbar={handleCloseToast}
+              onCloseAlert={handleCloseToast}
+            />
           </div>
         </Auth0ProviderWithHistory>
       </Router>

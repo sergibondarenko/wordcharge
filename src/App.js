@@ -33,7 +33,7 @@ const useStyles = makeStyles({
     flex: 1
   },
   app_breadcrumbs: {
-    marginBottom: '16px'
+    marginBottom: '24px'
   }
 });
 

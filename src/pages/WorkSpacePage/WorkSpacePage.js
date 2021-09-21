@@ -10,6 +10,7 @@ import {
   Link,
   makeStyles
 } from '@material-ui/core';
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   WorkSpaceService,
   WordCardsService,
@@ -301,12 +302,13 @@ function stateReducer(state, action) {
 }
 
 export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseAlert }) {
+  const { getAccessTokenSilently } = useAuth0();
   const isMountedRef = useRef(null);
   const { spaceId } = useParams();
   const history = useHistory();
   const workSpaceService = new WorkSpaceService({ storage: new BrowserLocalStorageService() });
   const wordCardsService = new WordCardsService({ storage: new BrowserLocalStorageService() });
-  const translationService = new TranslationService();
+  const translationService = new TranslationService({ getAccessTokenSilently });
 
   const [ state, dispatch ] = useReducer(stateReducer, getInitialState());
 

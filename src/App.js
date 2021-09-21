@@ -15,7 +15,7 @@ import { HomePage } from './pages/HomePage';
 import { WorkSpacePage } from './pages/WorkSpacePage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { Alert, AlertToaster, Footer, Header, Breadcrumbs } from './components';
-import { Auth0ProviderWithHistory, Auth0ProtectedRoute } from './auth';
+import { AuthProviderWithHistory, AuthProtectedRoute } from './auth';
 
 import '@fontsource/roboto';
 import './App.css';
@@ -106,7 +106,7 @@ export function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <Router>
-        <Auth0ProviderWithHistory>
+        <AuthProviderWithHistory>
           <div className={classes.app}>
             <Header />
             <div className={classes.app_breadcrumbs}>
@@ -147,7 +147,7 @@ export function App() {
                         onCloseAlert={handleCloseAlert}
                       />
                     </Route>
-                    <Auth0ProtectedRoute
+                    <AuthProtectedRoute
                       path='/user-profile/:userNickname'
                       component={UserProfilePage}
                     />
@@ -174,7 +174,7 @@ export function App() {
               onCloseAlert={handleCloseToast}
             />
           </div>
-        </Auth0ProviderWithHistory>
+        </AuthProviderWithHistory>
       </Router>
     </MuiThemeProvider>
   );

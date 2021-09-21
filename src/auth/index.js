@@ -1,2 +1,2 @@
-export { Auth0ProviderWithHistory } from './Auth0ProviderWithHistory';
-export { Auth0ProtectedRoute } from './Auth0ProtectedRoute';
+export { AuthProviderWithHistory } from './AuthProviderWithHistory';
+export { AuthProtectedRoute } from './AuthProtectedRoute';

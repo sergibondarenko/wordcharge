@@ -15,7 +15,7 @@ import { HomePage } from './pages/HomePage';
 import { WorkSpacePage } from './pages/WorkSpacePage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { Alert, AlertToaster, Footer, Header, Breadcrumbs } from './components';
-import { Auth0ProviderWithHistory } from './auth';
+import { Auth0ProviderWithHistory, Auth0ProtectedRoute } from './auth';
 
 import '@fontsource/roboto';
 import './App.css';
@@ -147,16 +147,10 @@ export function App() {
                         onCloseAlert={handleCloseAlert}
                       />
                     </Route>
-                    <Route path='/user-profile/:userNickname'>
-                      <UserProfilePage
-                        triggerWarningToast={triggerWarningToast}
-                        triggerErrorToast={triggerErrorToast}
-                        triggerWarningAlert={triggerWarningAlert}
-                        triggerErrorAlert={triggerErrorAlert}
-                        onCloseToast={handleCloseToast}
-                        onCloseAlert={handleCloseAlert}
-                      />
-                    </Route>
+                    <Auth0ProtectedRoute
+                      path='/user-profile/:userNickname'
+                      component={UserProfilePage}
+                    />
                     <Route path='/'>
                       <HomePage
                         triggerWarningToast={triggerWarningToast}

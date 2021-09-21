@@ -15,7 +15,8 @@ import {
   WorkSpaceService,
   WordCardsService,
   BrowserLocalStorageService,
-  TranslationService
+  TranslationService,
+  HttpClient,
 } from '../../services';
 import { ConfirmDialog } from '../../components';
 import { WordCard  } from './WordCard';
@@ -302,13 +303,12 @@ function stateReducer(state, action) {
 }
 
 export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseAlert }) {
-  const { getAccessTokenSilently } = useAuth0();
   const isMountedRef = useRef(null);
   const { spaceId } = useParams();
   const history = useHistory();
   const workSpaceService = new WorkSpaceService({ storage: new BrowserLocalStorageService() });
   const wordCardsService = new WordCardsService({ storage: new BrowserLocalStorageService() });
-  const translationService = new TranslationService({ getAccessTokenSilently });
+  const translationService = new TranslationService({ httpClient: new HttpClient() });
 
   const [ state, dispatch ] = useReducer(stateReducer, getInitialState());
 

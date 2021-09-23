@@ -10,7 +10,6 @@ import {
   Link,
   makeStyles
 } from '@material-ui/core';
-import { useAuth0 } from "@auth0/auth0-react";
 import {
   WorkSpaceService,
   WordCardsService,
@@ -20,6 +19,7 @@ import {
 } from '../../services';
 import { ConfirmDialog } from '../../components';
 import { WordCard  } from './WordCard';
+import { useAlertToaster, useAlerts } from '../../hooks';
 
 const useStyles = makeStyles((theme) => ({
   title_field: {
@@ -302,7 +302,9 @@ function stateReducer(state, action) {
   }
 }
 
-export function WorkSpacePage({ triggerErrorToast, triggerWarningAlert, onCloseAlert }) {
+export function WorkSpacePage() {
+  const { triggerErrorToast } = useAlertToaster();
+  const { onCloseAlert, triggerWarningAlert } = useAlerts();
   const isMountedRef = useRef(null);
   const { spaceId } = useParams();
   const history = useHistory();

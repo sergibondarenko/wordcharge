@@ -3,6 +3,7 @@ import { Grid, TextField, makeStyles } from '@material-ui/core';
 import { throttle } from 'lodash';
 import { WorkSpaceService, BrowserLocalStorageService } from '../../services';
 import { WorkSpaceCard } from './WorkSpaceCard';
+import { useAlertToaster } from '../../hooks';
 
 const useStyles = makeStyles({
   workspace_search_field: {
@@ -43,7 +44,8 @@ export function WorkSpaces({ data, onFilter, onDelete }) {
   );
 }
 
-export function WorkSpaceGrid({ triggerErrorToast }) {
+export function WorkSpaceGrid() {
+  const { triggerErrorToast } = useAlertToaster();
   const [workSpaces, setWorkSpaces] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchValue, setSearchValue] = useState('');

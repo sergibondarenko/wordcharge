@@ -9,8 +9,6 @@ const PORT = process.env.APP_WORDCHARGE_SERVER_PORT || 3001;
 const app = express();
 const freeDict = new FreeDict();
 
-console.log(process.env.APP_WORDCHARGE_AUTH0_DOMAIN);
-
 // Authorization middleware. When used, the
 // Access Token must exist and be verified against
 // the Auth0 JSON Web Key Set
@@ -36,8 +34,8 @@ const checkJwt = jwt({
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, '../build')));
 
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from server!' });
+app.get('/api/user', checkJwt, (req, res) => {
+  res.json({ data: req.user || null });
 });
 
 app.get('/api/freedict/translate/:dictName/:word', (req, res) => {

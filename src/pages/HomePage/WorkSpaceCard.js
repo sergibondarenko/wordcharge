@@ -85,7 +85,7 @@ export function WorkSpaceCard({ title, text, id, onDelete }) {
   }
 
   function handleEnter() {
-    history.push(`/workspace/${id}`);
+    history.push(`/work-space/${id}`);
   }
 
   function handleCloseConfirmDeletionDialog() {

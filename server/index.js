@@ -35,6 +35,7 @@ const checkJwt = jwt({
 app.use(express.static(path.resolve(__dirname, '../build')));
 
 app.get('/api/user', checkJwt, (req, res) => {
+  console.log('/api/user req.user', req.user);
   res.json({ data: req.user || null });
 });
 

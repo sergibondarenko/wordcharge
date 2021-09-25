@@ -1,8 +1,8 @@
-
 export class HttpClient {
   _handleResponse(response) {
     return response.text().then((res) => {
       let data = res;
+      console.log('HttpClient, this._handleResponse, data', data);
       if (data) data = JSON.parse(data);
       
       if (!response.ok) {
@@ -17,6 +17,7 @@ export class HttpClient {
 
   get(path, options = {}) {
     options.method = 'GET';
+    console.log('HttpClient, get, options', options);
 
     return fetch(path, options).then(this._handleResponse);
   }

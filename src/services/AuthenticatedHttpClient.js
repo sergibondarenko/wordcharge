@@ -10,6 +10,7 @@ export class AuthenticatedHttpClient extends HttpClient {
     return this._getAccessToken().then((token) => {
       if (!options.headers) options.headers = {};
       options.headers.Authorization = `Bearer ${token}`;
+      console.log('AuthenticatedHttpClient, this._authenticatedRequest', token, token);
       return super[method](path, options);
     });
   }

@@ -37,6 +37,7 @@ export function UserProfilePage() {
   async function handleRawUserData() {
     try {
       const { data } = await authHttpClient.get('/api/user');
+      console.log('handleRawUserData, data', data);
       setUserData(data);
     } catch (err) {
       console.error('UserProfilePage, handleRawUserData', err);

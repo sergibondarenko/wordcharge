@@ -6,6 +6,7 @@ Create cards of words from a text. Use the cards to learn languages.
 
 ## Available Scripts
 
+Prerequisites: NodeJS, the Auth0 configuration in .env, dictd and dictionaries.\
 In the project directory, you can run:
 
 ### `yarn start_reactjs`
@@ -50,6 +51,45 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## The production server setup
+
+### `./setup_server_dependencies.sh`
+
+Installs all the required server dependencies on the Debian Linux.
+
+### `pm2 start server/index.js --name "wordcharge.com"`
+
+Runs the NodeJS server as a daemon.
+
+### `pm2 list` 
+
+Lists all daemons.
+
+### `pm2 restart wordcharge.com`
+
+Restarts the server.
+
+### `pm2 startup systemd`
+### `pm2 save`
+
+Makes the daemons start when the server starts.
+
+### `sudo nginx -t`
+
+Tests the NGINX WEB server config.
+
+### `sudo systemctl restart nginx`
+
+Restarts the NGINX server.
+
+## TLS
+
+[Get the TLS certificate](https://certbot.eff.org/lets-encrypt/debianbuster-nginx).
+
+## NGINX
+
+[Configure NGINX to serve multiple websites](https://webdock.io/en/docs/how-guides/shared-hosting-multiple-websites/how-configure-nginx-to-serve-multiple-websites-single-vps).
 
 ## Learn More
 
